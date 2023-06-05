@@ -1,4 +1,19 @@
-def print_board(board):
+def generate():
+    board = []
+    for i in range(8):
+        board.append([])
+        for j in range(8):
+            board[i].append("o")
+
+    board[0][0] = "r"
+    board[0][7] = "r"
+    board[7][0] = "R"
+    board[7][7] = "R"
+    
+    return board
+
+
+def display(board):
     # Prints letter on top of the board
     print("  A  B  C  D  E  F  G  H")
     
