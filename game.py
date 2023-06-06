@@ -13,7 +13,7 @@ while move != "":
     end_coord = input_converter(move[2:])
     x2, y2 = end_coord
 
-    if isinstance(board_state[x1][y1], pieces.Rook):
+    if board_state[x1][y1] != "o":
         move_check = board_state[x1][y1].movement(end_coord)
         if move_check == True:
             board_state[x2][y2] = board_state[x1][y1]
