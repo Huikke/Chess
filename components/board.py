@@ -1,3 +1,5 @@
+import components.pieces as pieces
+
 def generate():
     board = []
     for i in range(8):
@@ -5,10 +7,10 @@ def generate():
         for j in range(8):
             board[i].append("o")
 
-    board[0][0] = "r"
-    board[0][7] = "r"
-    board[7][0] = "R"
-    board[7][7] = "R"
+    board[0][0] = pieces.Rook("B", (0, 0))
+    board[0][7] = pieces.Rook("B", (0, 7))
+    board[7][0] = pieces.Rook("W", (7, 0))
+    board[7][7] = pieces.Rook("W", (7, 7))
     
     return board
 
@@ -16,14 +18,24 @@ def generate():
 def display(board):
     # Prints letter on top of the board
     print("  A  B  C  D  E  F  G  H")
-    
-    coord_num = 8
+
     # Prints numbers on the side of the board
     # There is two spaces between every piece
+    coord_num = 8
+    row_display = ""
     for row in board:
-        print(coord_num, row[0], "",row[1], "",row[2], "",row[3], "",row[4], 
-              "",row[5], "",row[6], "", row[7], coord_num)
+        row_display += str(coord_num)
+        for tile in row:
+            if isinstance(tile, str):
+                row_display += " " + tile + " "
+            else:
+                row_display += " " + tile.color + " "
+        row_display += str(coord_num)
         coord_num -= 1
+        if coord_num != 0:
+            row_display += "\n"
+        
+    print(row_display)
 
     # Prints letter on top of the board
     print("  A  B  C  D  E  F  G  H")

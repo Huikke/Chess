@@ -1,9 +1,9 @@
-import components.board as Board
+import components.board as board
 from components.input_converter import input_converter
-import components.pieces as Pieces
+import components.pieces as pieces
 
-board = Board.generate()
-Board.display(board)
+board_state = board.generate()
+board.display(board_state)
 
 move = " "
 while move != "":
@@ -13,10 +13,10 @@ while move != "":
     end_coord = input_converter(move[2:])
     x2, y2 = end_coord
 
-    if board[x1][y1] == "R" or board[x1][y1] == "r":
-        move_check = Pieces.rook(start_coord, end_coord)
+    if isinstance(board_state[x1][y1], pieces.Rook):
+        move_check = board_state[x1][y1].movement(end_coord)
         if move_check == True:
-            board[x2][y2] = board[x1][y1]
-            board[x1][y1] = "o"
+            board_state[x2][y2] = board_state[x1][y1]
+            board_state[x1][y1] = "o"
     
-    Board.display(board)
+    board.display(board_state)

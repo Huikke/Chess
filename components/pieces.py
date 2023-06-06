@@ -1,4 +1,13 @@
-def rook(s_coord, e_coord):
-    if s_coord[0] == e_coord[0] or s_coord[1] == e_coord[1]:
-        return True
-    return False
+class Rook:
+    def __init__(self, color, position):
+        if color == "W":
+            self.color = "R"
+        elif color == "B":
+            self.color = "r"
+        self.position = position
+
+    def movement(self, coord):
+        if self.position[0] == coord[0] or self.position[1] == coord[1]:
+            self.position = coord
+            return True
+        return False
