@@ -26,10 +26,7 @@ def display(board):
     for row in board:
         row_display += str(coord_num)
         for tile in row:
-            if isinstance(tile, str):
-                row_display += " " + tile + " "
-            else:
-                row_display += " " + tile.color + " "
+            row_display += " " + str(tile) + " "
         row_display += str(coord_num)
         coord_num -= 1
         if coord_num != 0:

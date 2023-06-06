@@ -1,9 +1,6 @@
 class Rook:
     def __init__(self, color, position):
-        if color == "W":
-            self.color = "R"
-        elif color == "B":
-            self.color = "r"
+        self.color = color
         self.position = position
 
     def movement(self, coord):
@@ -11,3 +8,9 @@ class Rook:
             self.position = coord
             return True
         return False
+
+    def __str__(self):
+        if self.color == "W":
+            return "R"
+        if self.color == "B":
+            return "r"
