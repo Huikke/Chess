@@ -8,15 +8,19 @@ def generate():
             board[i].append("o")
 
     board[0][0] = pieces.Rook("B", (0, 0))
+    board[0][1] = pieces.Knight("B", (0, 1))
     board[0][2] = pieces.Bishop("B", (0, 2))
     board[0][4] = pieces.Queen("B", (0, 4))
     board[0][5] = pieces.Bishop("B", (0, 5))
+    board[0][6] = pieces.Knight("B", (0, 6))
     board[0][7] = pieces.Rook("B", (0, 7))
 
     board[7][0] = pieces.Rook("W", (7, 0))
+    board[7][1] = pieces.Knight("W", (7, 1))
     board[7][2] = pieces.Bishop("W", (7, 2))
     board[7][3] = pieces.Queen("W", (7, 3))
     board[7][5] = pieces.Bishop("W", (7, 5))
+    board[7][6] = pieces.Knight("W", (7, 6))
     board[7][7] = pieces.Rook("W", (7, 7))
     
     return board
