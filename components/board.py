@@ -24,6 +24,10 @@ def generate():
     board[7][5] = pieces.Bishop("W", (7, 5))
     board[7][6] = pieces.Knight("W", (7, 6))
     board[7][7] = pieces.Rook("W", (7, 7))
+
+    for i in range(8):
+        board[1][i] = pieces.Pawn("B", (1, i))
+        board[6][i] = pieces.Pawn("W", (6, i))
     
     return board
 

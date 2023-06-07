@@ -81,3 +81,29 @@ class King(Piece):
             return True
         else:
             return False
+
+class Pawn(Piece):
+    def __init__(self, color, position):
+        super().__init__(color, position)
+        self.letter = "P"
+
+    # TODO:
+    # capturing
+    # double move
+    # promotion
+    # en passant
+    def movement(self, coord):
+        row_direction = coord[0] - self.position[0]
+
+        if self.color == "W":
+            if row_direction > 0:
+                return False
+        if self.color == "B":
+            if row_direction < 0:
+                return False
+
+        if self.position[1] == coord[1]:
+            self.position = coord
+            return True
+        else:
+            return False
