@@ -66,3 +66,18 @@ class Knight(Piece):
             return True
         else:
             return False
+
+class King(Piece):
+    def __init__(self, color, position):
+        super().__init__(color, position)
+        self.letter = "K"
+
+    def movement(self, coord):
+        row_distance = abs(coord[0] - self.position[0])
+        col_distance = abs(coord[1] - self.position[1])
+        
+        if row_distance <= 1 and col_distance <= 1:
+            self.position = coord
+            return True
+        else:
+            return False
