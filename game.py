@@ -14,9 +14,9 @@ while move != "":
     x2, y2 = end_coord
 
     if board_state[x1][y1] != "o":
-        move_check = board_state[x1][y1].movement(end_coord)
+        move_check = board_state[x1][y1].movement(end_coord, board_state)
         if move_check == True:
             board_state[x2][y2] = board_state[x1][y1]
             board_state[x1][y1] = "o"
-    
+
     board.display(board_state)
