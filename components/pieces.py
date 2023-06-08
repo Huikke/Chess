@@ -103,7 +103,6 @@ class Pawn(Piece):
         move_distance = 1
         if self.first_move:
             move_distance = 2
-            self.first_move = False
 
         if self.color == "W":
             if row_distance > 0:
@@ -114,6 +113,7 @@ class Pawn(Piece):
 
         if col_distance == 0 and abs(row_distance) <= move_distance:
             self.position = destination
+            self.first_move = False
             return True
         else:
             return False
