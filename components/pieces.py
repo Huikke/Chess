@@ -16,6 +16,10 @@ class Piece:
         return row_distance, col_distance
 
     def obstacle_check(self, row, col, board):
+        # Pawn destination check
+        if board[self.position[0] + row][self.position[1] + col] != "o" and isinstance(self, Pawn):
+            return True
+
         for i in range(1, 8):
             current_row = row - i if row > 0 else row + i if row < 0 else row
             current_col = col - i if col > 0 else col + i if col < 0 else col
@@ -126,6 +130,8 @@ class Pawn(Piece):
                 return False
 
         if col_distance == 0 and abs(row_distance) <= move_distance:
+            if self.obstacle_check(row_distance, col_distance, board):
+                return False
             self.position = destination
             self.first_move = False
             return True
