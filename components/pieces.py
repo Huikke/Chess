@@ -10,14 +10,24 @@ class Piece:
         if self.color == "B":
             return self.letter.lower()
 
+    def coord_distance(self, destination):
+        row_distance = destination[0] - self.position[0]
+        col_distance = destination[1] - self.position[1]
+        return row_distance, col_distance
+
+    # def validity_check(self, ):
+
+
 class Rook(Piece):
     def __init__(self, color, position):
         super().__init__(color, position)
         self.letter = "R"
 
-    def movement(self, coord):
-        if self.position[0] == coord[0] or self.position[1] == coord[1]:
-            self.position = coord
+    def movement(self, destination):
+        row_distance, col_distance = self.coord_distance(destination)
+        
+        if row_distance == 0 or col_distance == 0:
+            self.position = destination
             return True
         else:
             return False
@@ -27,12 +37,11 @@ class Bishop(Piece):
         super().__init__(color, position)
         self.letter = "B"
 
-    def movement(self, coord):
-        row_distance = abs(coord[0] - self.position[0])
-        col_distance = abs(coord[1] - self.position[1])
+    def movement(self, destination):
+        row_distance, col_distance = self.coord_distance(destination)
         
-        if row_distance == col_distance:
-            self.position = coord
+        if abs(row_distance) == abs(col_distance):
+            self.position = destination
             return True
         else:
             return False
@@ -42,12 +51,11 @@ class Queen(Piece):
         super().__init__(color, position)
         self.letter = "Q"
 
-    def movement(self, coord):
-        row_distance = abs(coord[0] - self.position[0])
-        col_distance = abs(coord[1] - self.position[1])
+    def movement(self, destination):
+        row_distance, col_distance = self.coord_distance(destination)
         
-        if self.position[0] == coord[0] or self.position[1] == coord[1] or row_distance == col_distance:
-            self.position = coord
+        if row_distance == 0 or col_distance == 0 or abs(row_distance) == abs(col_distance):
+            self.position = destination
             return True
         else:
             return False
@@ -57,12 +65,11 @@ class Knight(Piece):
         super().__init__(color, position)
         self.letter = "N"
 
-    def movement(self, coord):
-        row_distance = abs(coord[0] - self.position[0])
-        col_distance = abs(coord[1] - self.position[1])
+    def movement(self, destination):
+        row_distance, col_distance = self.coord_distance(destination)
         
-        if row_distance == 2 and col_distance == 1 or row_distance == 1 and col_distance == 2:
-            self.position = coord
+        if abs(row_distance) == 2 and abs(col_distance) == 1 or abs(row_distance) == 1 and abs(col_distance) == 2:
+            self.position = destination
             return True
         else:
             return False
@@ -72,12 +79,11 @@ class King(Piece):
         super().__init__(color, position)
         self.letter = "K"
 
-    def movement(self, coord):
-        row_distance = abs(coord[0] - self.position[0])
-        col_distance = abs(coord[1] - self.position[1])
+    def movement(self, destination):
+        row_distance, col_distance = self.coord_distance(destination)
         
-        if row_distance <= 1 and col_distance <= 1:
-            self.position = coord
+        if abs(row_distance) <= 1 and abs(col_distance) <= 1:
+            self.position = destination
             return True
         else:
             return False
@@ -92,22 +98,22 @@ class Pawn(Piece):
     # capturing
     # promotion
     # en passant
-    def movement(self, coord):
-        row_movement = coord[0] - self.position[0]
+    def movement(self, destination):
+        row_distance, col_distance = self.coord_distance(destination)
         move_distance = 1
         if self.first_move:
             move_distance = 2
             self.first_move = False
 
         if self.color == "W":
-            if row_movement > 0:
+            if row_distance > 0:
                 return False
         elif self.color == "B":
-            if row_movement < 0:
+            if row_distance < 0:
                 return False
 
-        if self.position[1] == coord[1] and abs(row_movement) <= move_distance:
-            self.position = coord
+        if col_distance == 0 and abs(row_distance) <= move_distance:
+            self.position = destination
             return True
         else:
             return False
