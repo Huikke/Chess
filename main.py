@@ -13,4 +13,7 @@ while True:
 
     game_move = game_turn(board_state, str_coord, dest_coord)
 
-    board.display(board_state)
+    if game_move == True:
+        board.display(board_state)
+    else:
+        print("Invalid move!")
