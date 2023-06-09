@@ -17,18 +17,32 @@ class Piece:
 
     def obstacle_check(self, row, col, board):
         # Pawn destination check
-        if board[self.position[0] + row][self.position[1] + col] != "o" and isinstance(self, Pawn):
-            return True
+        x = self.position[0] + row
+        y = self.position[1] + col
+        if board[x][y] != "o" and isinstance(self, Pawn):
+            return False
 
         for i in range(1, 8):
             current_row = row - i if row > 0 else row + i if row < 0 else row
             current_col = col - i if col > 0 else col + i if col < 0 else col
+            x = self.position[0] + current_row
+            y = self.position[1] + current_col
 
             if current_row == 0 and current_col == 0:
-                return False
-            if board[self.position[0] + current_row][self.position[1] + current_col] != "o":
                 return True
+            if board[x][y] != "o":
+                return False
 
+    def destination_check(self, coord, board):
+        d_tile = board[coord[0]][coord[1]]
+
+        if d_tile == "o":
+            return True
+        elif self.color == d_tile.color:
+            return False
+        else:
+            return True
+            
 
 class Rook(Piece):
     def __init__(self, color, position):
@@ -39,7 +53,9 @@ class Rook(Piece):
         row_distance, col_distance = self.coord_distance(destination)
 
         if row_distance == 0 or col_distance == 0:
-            if self.obstacle_check(row_distance, col_distance, board):
+            if self.obstacle_check(row_distance, col_distance, board) == False:
+                return False
+            if self.destination_check(destination, board) == False:
                 return False
             self.position = destination
             return True
@@ -55,7 +71,9 @@ class Bishop(Piece):
         row_distance, col_distance = self.coord_distance(destination)
 
         if abs(row_distance) == abs(col_distance):
-            if self.obstacle_check(row_distance, col_distance, board):
+            if self.obstacle_check(row_distance, col_distance, board) == False:
+                return False
+            if self.destination_check(destination, board) == False:
                 return False
             self.position = destination
             return True
@@ -71,7 +89,9 @@ class Queen(Piece):
         row_distance, col_distance = self.coord_distance(destination)
 
         if row_distance == 0 or col_distance == 0 or abs(row_distance) == abs(col_distance):
-            if self.obstacle_check(row_distance, col_distance, board):
+            if self.obstacle_check(row_distance, col_distance, board) == False:
+                return False
+            if self.destination_check(destination, board) == False:
                 return False
             self.position = destination
             return True
@@ -87,6 +107,8 @@ class Knight(Piece):
         row_distance, col_distance = self.coord_distance(destination)
 
         if abs(row_distance) == 2 and abs(col_distance) == 1 or abs(row_distance) == 1 and abs(col_distance) == 2:
+            if self.destination_check(destination, board) == False:
+                return False
             self.position = destination
             return True
         else:
@@ -101,6 +123,8 @@ class King(Piece):
         row_distance, col_distance = self.coord_distance(destination)
 
         if abs(row_distance) <= 1 and abs(col_distance) <= 1:
+            if self.destination_check(destination, board) == False:
+                return False
             self.position = destination
             return True
         else:
@@ -130,7 +154,9 @@ class Pawn(Piece):
                 return False
 
         if col_distance == 0 and abs(row_distance) <= move_distance:
-            if self.obstacle_check(row_distance, col_distance, board):
+            if self.obstacle_check(row_distance, col_distance, board) == False:
+                return False
+            if self.destination_check(destination, board) == False:
                 return False
             self.position = destination
             self.first_move = False
