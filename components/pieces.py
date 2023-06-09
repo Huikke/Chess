@@ -16,12 +16,6 @@ class Piece:
         return row_distance, col_distance
 
     def obstacle_check(self, row, col, board):
-        # Pawn destination check
-        x = self.position[0] + row
-        y = self.position[1] + col
-        if board[x][y] != "o" and isinstance(self, Pawn):
-            return False
-
         for i in range(1, 8):
             current_row = row - i if row > 0 else row + i if row < 0 else row
             current_col = col - i if col > 0 else col + i if col < 0 else col
@@ -135,12 +129,13 @@ class Pawn(Piece):
         super().__init__(color, position)
         self.letter = "P"
         self.first_move = True
+        self.capturing = False
 
     # TODO:
-    # capturing
     # promotion
     # en passant
     def movement(self, destination, board):
+        self.capturing = False
         row_distance, col_distance = self.coord_distance(destination)
         move_distance = 1
         if self.first_move:
@@ -153,7 +148,10 @@ class Pawn(Piece):
             if row_distance < 0:
                 return False
 
-        if col_distance == 0 and abs(row_distance) <= move_distance:
+        if abs(col_distance) <= 1 and abs(row_distance) <= move_distance:
+            if abs(col_distance) == 1:
+                self.capturing = True
+
             if self.obstacle_check(row_distance, col_distance, board) == False:
                 return False
             if self.destination_check(destination, board) == False:
@@ -163,3 +161,16 @@ class Pawn(Piece):
             return True
         else:
             return False
+
+    # Pawn has own destination_check
+    def destination_check(self, coord, board):
+        d_tile = board[coord[0]][coord[1]]
+
+        if self.capturing == False and d_tile == "o":
+            return True
+        elif self.capturing == True and d_tile == "o" or self.position[1] == d_tile.position[1]:
+            return False
+        elif self.color == d_tile.color:
+            return False
+        else:
+            return True
