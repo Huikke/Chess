@@ -15,27 +15,26 @@ class Piece:
         col_distance = destination[1] - self.position[1]
         return row_distance, col_distance
 
-    def obstacle_check(self, row, col, board):
+    def obstacle_check(self, row, col, board_pieces):
         for i in range(1, 8):
             current_row = row - i if row > 0 else row + i if row < 0 else row
             current_col = col - i if col > 0 else col + i if col < 0 else col
-            x = self.position[0] + current_row
-            y = self.position[1] + current_col
+            check_position = ((self.position[0] + current_row), (self.position[1] + current_col))
 
             if current_row == 0 and current_col == 0:
                 return True
-            if board[x][y] != "o":
-                return False
+            for piece in board_pieces:
+                if piece.position == check_position:
+                    return False
 
-    def destination_check(self, coord, board):
-        d_tile = board[coord[0]][coord[1]]
-
-        if d_tile == "o":
-            return True
-        elif self.color == d_tile.color:
-            return False
-        else:
-            return True
+    def destination_check(self, destination, board_pieces):
+        for piece in board_pieces:
+            if piece.position == destination:
+                if self.color == piece.color:
+                    return False
+                else:
+                    return True
+        return True
             
 
 class Rook(Piece):
@@ -43,13 +42,13 @@ class Rook(Piece):
         super().__init__(color, position)
         self.letter = "R"
 
-    def movement(self, destination, board):
+    def movement(self, destination, board_pieces):
         row_distance, col_distance = self.coord_distance(destination)
 
         if row_distance == 0 or col_distance == 0:
-            if self.obstacle_check(row_distance, col_distance, board) == False:
+            if self.obstacle_check(row_distance, col_distance, board_pieces) == False:
                 return False
-            if self.destination_check(destination, board) == False:
+            if self.destination_check(destination, board_pieces) == False:
                 return False
             self.position = destination
             return True
@@ -61,13 +60,13 @@ class Bishop(Piece):
         super().__init__(color, position)
         self.letter = "B"
 
-    def movement(self, destination, board):
+    def movement(self, destination, board_pieces):
         row_distance, col_distance = self.coord_distance(destination)
 
         if abs(row_distance) == abs(col_distance):
-            if self.obstacle_check(row_distance, col_distance, board) == False:
+            if self.obstacle_check(row_distance, col_distance, board_pieces) == False:
                 return False
-            if self.destination_check(destination, board) == False:
+            if self.destination_check(destination, board_pieces) == False:
                 return False
             self.position = destination
             return True
@@ -79,13 +78,13 @@ class Queen(Piece):
         super().__init__(color, position)
         self.letter = "Q"
 
-    def movement(self, destination, board):
+    def movement(self, destination, board_pieces):
         row_distance, col_distance = self.coord_distance(destination)
 
         if row_distance == 0 or col_distance == 0 or abs(row_distance) == abs(col_distance):
-            if self.obstacle_check(row_distance, col_distance, board) == False:
+            if self.obstacle_check(row_distance, col_distance, board_pieces) == False:
                 return False
-            if self.destination_check(destination, board) == False:
+            if self.destination_check(destination, board_pieces) == False:
                 return False
             self.position = destination
             return True
@@ -97,11 +96,11 @@ class Knight(Piece):
         super().__init__(color, position)
         self.letter = "N"
 
-    def movement(self, destination, board):
+    def movement(self, destination, board_pieces):
         row_distance, col_distance = self.coord_distance(destination)
 
         if abs(row_distance) == 2 and abs(col_distance) == 1 or abs(row_distance) == 1 and abs(col_distance) == 2:
-            if self.destination_check(destination, board) == False:
+            if self.destination_check(destination, board_pieces) == False:
                 return False
             self.position = destination
             return True
@@ -113,11 +112,11 @@ class King(Piece):
         super().__init__(color, position)
         self.letter = "K"
 
-    def movement(self, destination, board):
+    def movement(self, destination, board_pieces):
         row_distance, col_distance = self.coord_distance(destination)
 
         if abs(row_distance) <= 1 and abs(col_distance) <= 1:
-            if self.destination_check(destination, board) == False:
+            if self.destination_check(destination, board_pieces) == False:
                 return False
             self.position = destination
             return True
@@ -134,7 +133,7 @@ class Pawn(Piece):
     # TODO:
     # promotion
     # en passant
-    def movement(self, destination, board):
+    def movement(self, destination, board_pieces):
         self.capturing = False
         row_distance, col_distance = self.coord_distance(destination)
         move_distance = 1
@@ -152,9 +151,9 @@ class Pawn(Piece):
             if abs(col_distance) == 1:
                 self.capturing = True
 
-            if self.obstacle_check(row_distance, col_distance, board) == False:
+            if self.obstacle_check(row_distance, col_distance, board_pieces) == False:
                 return False
-            if self.destination_check(destination, board) == False:
+            if self.destination_check(destination, board_pieces) == False:
                 return False
             self.position = destination
             self.first_move = False
@@ -163,14 +162,14 @@ class Pawn(Piece):
             return False
 
     # Pawn has own destination_check
-    def destination_check(self, coord, board):
-        d_tile = board[coord[0]][coord[1]]
+    # def destination_check(self, coord, board):
+    #     d_tile = board[coord[0]][coord[1]]
 
-        if self.capturing == False and d_tile == "o":
-            return True
-        elif self.capturing == True and d_tile == "o" or self.position[1] == d_tile.position[1]:
-            return False
-        elif self.color == d_tile.color:
-            return False
-        else:
-            return True
+    #     if self.capturing == False and d_tile == "o":
+    #         return True
+    #     elif self.capturing == True and d_tile == "o" or self.position[1] == d_tile.position[1]:
+    #         return False
+    #     elif self.color == d_tile.color:
+    #         return False
+    #     else:
+    #         return True
