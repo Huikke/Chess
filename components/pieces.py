@@ -3,7 +3,7 @@ class Piece:
         self.color = color
         self.position = position
         self.letter = "?" # Gets replaced in subclass
-    
+
     def __str__(self):
         if self.color == "W":
             return self.letter
@@ -15,6 +15,7 @@ class Piece:
         col_distance = destination[1] - self.position[1]
         return row_distance, col_distance
 
+    # Checks whether there is obstacles in piece's path
     def obstacle_check(self, row, col, board_pieces):
         for i in range(1, 8):
             current_row = row - i if row > 0 else row + i if row < 0 else row
@@ -27,15 +28,26 @@ class Piece:
                 if piece.position == check_position:
                     return False
 
+    # Checks whether destination can be moved into
     def destination_check(self, destination, board_pieces):
         for piece in board_pieces:
             if piece.position == destination:
+                # Doesn't capture ally piece
                 if self.color == piece.color:
                     return False
-                else:
+                # Do capture enemy piece
+                elif self.color == "W" and piece.color == "B" or self.color == "B" and piece.color == "W":
+                    # Pawn doesn't capture if capturing is not on
+                    if isinstance(self, Pawn) and self.capturing == False:
+                        return False
+                    # Removes eaten piece from the game
+                    board_pieces.remove(piece)
                     return True
+        # Pawn doesn't move to empty position, it is capturing
+        if isinstance(self, Pawn) and self.capturing == True:
+            return False
         return True
-            
+
 
 class Rook(Piece):
     def __init__(self, color, position):
@@ -148,8 +160,11 @@ class Pawn(Piece):
                 return False
 
         if abs(col_distance) <= 1 and abs(row_distance) <= move_distance:
-            if abs(col_distance) == 1:
+            # If pawn moves diagonally
+            if abs(row_distance) == 1 and abs(col_distance) == 1:
                 self.capturing = True
+            if abs(row_distance) != 1 and abs(col_distance) == 1:
+                return False
 
             if self.obstacle_check(row_distance, col_distance, board_pieces) == False:
                 return False
@@ -160,16 +175,3 @@ class Pawn(Piece):
             return True
         else:
             return False
-
-    # Pawn has own destination_check
-    # def destination_check(self, coord, board):
-    #     d_tile = board[coord[0]][coord[1]]
-
-    #     if self.capturing == False and d_tile == "o":
-    #         return True
-    #     elif self.capturing == True and d_tile == "o" or self.position[1] == d_tile.position[1]:
-    #         return False
-    #     elif self.color == d_tile.color:
-    #         return False
-    #     else:
-    #         return True
