@@ -40,7 +40,7 @@ class Chess():
         self.board_pieces = list(self.starting_pieces)
         self.turn = "W"
         self.castling = ["K", "Q", "k", "q"]
-        self.en_passant = False
+        self.en_passant = "-"
         self.halfmove_clock = 0
         self.fullmove_counter = 1
 
@@ -48,10 +48,15 @@ class Chess():
         return self.board_pieces
 
     def move(self, str_coord, dest_coord):
+        en_passant_check = self.en_passant
+
         for piece in self.board_pieces:
             if piece.position == str_coord:
-                move_check = piece.movement(dest_coord, self.board_pieces)
+                move_check = piece.movement(dest_coord, self)
                 if move_check == True:
+                    # Set en passant back to "-" if it wasn't set up this turn
+                    if self.en_passant == en_passant_check:
+                        self.en_passant = "-"
                     piece.position = dest_coord
                     return True
                 else:

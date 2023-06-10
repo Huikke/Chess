@@ -16,7 +16,7 @@ class Piece:
         return row_distance, col_distance
 
     # Checks whether there is obstacles in piece's path
-    def obstacle_check(self, row, col, board_pieces):
+    def obstacle_check(self, row, col, game_state):
         for i in range(1, 8):
             current_row = row - i if row > 0 else row + i if row < 0 else row
             current_col = col - i if col > 0 else col + i if col < 0 else col
@@ -24,13 +24,13 @@ class Piece:
 
             if current_row == 0 and current_col == 0:
                 return True
-            for piece in board_pieces:
+            for piece in game_state.board_pieces:
                 if piece.position == check_position:
                     return False
 
     # Checks whether destination can be moved into
-    def destination_check(self, destination, board_pieces):
-        for piece in board_pieces:
+    def destination_check(self, destination, game_state):
+        for piece in game_state.board_pieces:
             if piece.position == destination:
                 # Doesn't capture ally piece
                 if self.color == piece.color:
@@ -41,10 +41,17 @@ class Piece:
                     if isinstance(self, Pawn) and self.capturing == False:
                         return False
                     # Removes eaten piece from the game
-                    board_pieces.remove(piece)
+                    game_state.board_pieces.remove(piece)
                     return True
         # Pawn doesn't move to empty position, it is capturing
         if isinstance(self, Pawn) and self.capturing == True:
+            # Unless it's legal en passant
+            if destination == game_state.en_passant:
+                move_direction = 1 if self.color == "W" else -1
+                for piece in game_state.board_pieces:
+                    if piece.position == (destination[0] + move_direction, destination[1]):
+                        game_state.board_pieces.remove(piece)
+                return True
             return False
         return True
 
@@ -54,13 +61,13 @@ class Rook(Piece):
         super().__init__(color, position)
         self.letter = "R"
 
-    def movement(self, destination, board_pieces):
+    def movement(self, destination, game_state):
         row_distance, col_distance = self.coord_distance(destination)
 
         if row_distance == 0 or col_distance == 0:
-            if self.obstacle_check(row_distance, col_distance, board_pieces) == False:
+            if self.obstacle_check(row_distance, col_distance, game_state) == False:
                 return False
-            if self.destination_check(destination, board_pieces) == False:
+            if self.destination_check(destination, game_state) == False:
                 return False
             self.position = destination
             return True
@@ -72,13 +79,13 @@ class Bishop(Piece):
         super().__init__(color, position)
         self.letter = "B"
 
-    def movement(self, destination, board_pieces):
+    def movement(self, destination, game_state):
         row_distance, col_distance = self.coord_distance(destination)
 
         if abs(row_distance) == abs(col_distance):
-            if self.obstacle_check(row_distance, col_distance, board_pieces) == False:
+            if self.obstacle_check(row_distance, col_distance, game_state) == False:
                 return False
-            if self.destination_check(destination, board_pieces) == False:
+            if self.destination_check(destination, game_state) == False:
                 return False
             self.position = destination
             return True
@@ -90,13 +97,13 @@ class Queen(Piece):
         super().__init__(color, position)
         self.letter = "Q"
 
-    def movement(self, destination, board_pieces):
+    def movement(self, destination, game_state):
         row_distance, col_distance = self.coord_distance(destination)
 
         if row_distance == 0 or col_distance == 0 or abs(row_distance) == abs(col_distance):
-            if self.obstacle_check(row_distance, col_distance, board_pieces) == False:
+            if self.obstacle_check(row_distance, col_distance, game_state) == False:
                 return False
-            if self.destination_check(destination, board_pieces) == False:
+            if self.destination_check(destination, game_state) == False:
                 return False
             self.position = destination
             return True
@@ -108,11 +115,11 @@ class Knight(Piece):
         super().__init__(color, position)
         self.letter = "N"
 
-    def movement(self, destination, board_pieces):
+    def movement(self, destination, game_state):
         row_distance, col_distance = self.coord_distance(destination)
 
         if abs(row_distance) == 2 and abs(col_distance) == 1 or abs(row_distance) == 1 and abs(col_distance) == 2:
-            if self.destination_check(destination, board_pieces) == False:
+            if self.destination_check(destination, game_state) == False:
                 return False
             self.position = destination
             return True
@@ -124,11 +131,11 @@ class King(Piece):
         super().__init__(color, position)
         self.letter = "K"
 
-    def movement(self, destination, board_pieces):
+    def movement(self, destination, game_state):
         row_distance, col_distance = self.coord_distance(destination)
 
         if abs(row_distance) <= 1 and abs(col_distance) <= 1:
-            if self.destination_check(destination, board_pieces) == False:
+            if self.destination_check(destination, game_state) == False:
                 return False
             self.position = destination
             return True
@@ -145,19 +152,24 @@ class Pawn(Piece):
     # TODO:
     # promotion
     # en passant
-    def movement(self, destination, board_pieces):
+    def movement(self, destination, game_state):
         self.capturing = False
         row_distance, col_distance = self.coord_distance(destination)
         move_distance = 1
         if self.first_move:
             move_distance = 2
 
+        move_direction = 0
         if self.color == "W":
             if row_distance > 0:
                 return False
+            else:
+                move_direction = 1
         elif self.color == "B":
             if row_distance < 0:
                 return False
+            else:
+                move_direction = -1
 
         if abs(col_distance) <= 1 and abs(row_distance) <= move_distance:
             # If pawn moves diagonally
@@ -166,10 +178,14 @@ class Pawn(Piece):
             if abs(row_distance) != 1 and abs(col_distance) == 1:
                 return False
 
-            if self.obstacle_check(row_distance, col_distance, board_pieces) == False:
+            if self.destination_check(destination, game_state) == False:
                 return False
-            if self.destination_check(destination, board_pieces) == False:
-                return False
+            if abs(row_distance) == 2:
+                if self.obstacle_check(row_distance, col_distance, game_state) == False:
+                    return False
+                else:
+                    en_passant_tile = (destination[0] + move_direction, destination[1])
+                    game_state.en_passant = en_passant_tile
             self.position = destination
             self.first_move = False
             return True
