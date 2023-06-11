@@ -149,9 +149,6 @@ class Pawn(Piece):
         self.first_move = True
         self.capturing = False
 
-    # TODO:
-    # promotion
-    # en passant
     def movement(self, destination, game_state):
         self.capturing = False
         row_distance, col_distance = self.coord_distance(destination)
@@ -180,6 +177,7 @@ class Pawn(Piece):
 
             if self.destination_check(destination, game_state) == False:
                 return False
+            # Only double move needs obstacle check, then mark it as valid en passant target if true
             if abs(row_distance) == 2:
                 if self.obstacle_check(row_distance, col_distance, game_state) == False:
                     return False
@@ -187,6 +185,24 @@ class Pawn(Piece):
                     en_passant_tile = (destination[0] + move_direction, destination[1])
                     game_state.en_passant = en_passant_tile
             self.position = destination
+            # Promotion
+            if self.position[0] == 0 or self.position[0] == 7:
+                while True:
+                    promote_to = input("Choose what the pawn promote to: ") # One letter
+                    if promote_to == "Q" or promote_to == "q":
+                        game_state.board_pieces.append(Queen(self.color, self.position))
+                    elif promote_to == "R" or promote_to == "r":
+                        game_state.board_pieces.append(Rook(self.color, self.position))
+                    elif promote_to == "N" or promote_to == "n":
+                        game_state.board_pieces.append(Knight(self.color, self.position))
+                    elif promote_to == "B" or promote_to == "b":
+                        game_state.board_pieces.append(Bishop(self.color, self.position))
+                    else:
+                        print("Invalid input!")
+                        continue
+                    # Removes the pawn
+                    game_state.board_pieces.remove(self)
+                    break
             self.first_move = False
             return True
         else:
