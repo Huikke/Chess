@@ -38,7 +38,7 @@ class Chess():
 
     def __init__(self):
         self.board_pieces = list(self.starting_pieces)
-        self.previous_board_state = []
+        self.captured_piece = None
         # self.infinite = False
         self.turn = "W" #TODO
         self.castling = ["K", "Q", "k", "q"] #TODO
@@ -51,6 +51,7 @@ class Chess():
 
     def move(self, str_coord, dest_coord):
         en_passant_check = self.en_passant
+        self.captured_piece = None
         # if self.infinite == False and self.check_check() == True:
         #     self.infinite == True
         #     for piece in self.board_pieces:
@@ -75,7 +76,7 @@ class Chess():
                 piece.position = dest_coord
                 if self.check_check() == True:
                     piece.position = str_coord
-                    self.board_pieces = list(self.previous_board_state)
+                    self.board_pieces.append(self.captured_piece)
                     return False
 
                 if isinstance(piece, pieces.Pawn):
@@ -108,7 +109,6 @@ class Chess():
                 if self.en_passant == en_passant_check:
                     self.en_passant = "-"
                 self.turn = "B" if self.turn == "W" else "W"
-                self.previous_board_state = list(self.board_pieces)
                 return True
         return False
 
