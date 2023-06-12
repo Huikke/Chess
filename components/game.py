@@ -38,7 +38,8 @@ class Chess():
 
     def __init__(self):
         self.board_pieces = list(self.starting_pieces)
-        self.kings = [self.board_pieces[0], self.board_pieces[1]]
+        self.previous_board_state = []
+        # self.infinite = False
         self.turn = "W" #TODO
         self.castling = ["K", "Q", "k", "q"] #TODO
         self.en_passant = "-"
@@ -50,8 +51,15 @@ class Chess():
 
     def move(self, str_coord, dest_coord):
         en_passant_check = self.en_passant
-        if self.check_check() == True:
-            print("Check!")
+        # if self.infinite == False and self.check_check() == True:
+        #     self.infinite == True
+        #     for piece in self.board_pieces:
+        #         if piece.color == self.turn:
+        #             for x in range(8):
+        #                 for y in range(8):
+        #                     if self.move(piece.position, (x, y)) == True:
+
+        #     self.infinite == False
 
         for piece in self.board_pieces:
             if piece.position == str_coord:
@@ -67,7 +75,8 @@ class Chess():
                 piece.position = dest_coord
                 if self.check_check() == True:
                     piece.position = str_coord
-                    return "Invalid move!"
+                    self.board_pieces = list(self.previous_board_state)
+                    return False
 
                 if isinstance(piece, pieces.Pawn):
                     # En passant
@@ -99,14 +108,15 @@ class Chess():
                 if self.en_passant == en_passant_check:
                     self.en_passant = "-"
                 self.turn = "B" if self.turn == "W" else "W"
+                self.previous_board_state = list(self.board_pieces)
                 return True
         return False
 
     def check_check(self):
-        if self.turn == "W":
-            coords = self.kings[0].position
-        else:
-            coords = self.kings[1].position
+        for piece in self.board_pieces:
+            if isinstance(piece, pieces.King) and piece.color == self.turn:
+                coords = piece.position
+                break
 
         for piece in self.board_pieces:
             row_distance, col_distance = piece.coord_distance(coords)
