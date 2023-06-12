@@ -6,7 +6,8 @@ game = Chess()
 board.display(game.board_pieces)
 
 while True:
-    move = input("Move piece: ") # Start coord and end coord like E1E7
+    turn = "White" if game.turn == "W" else "Black"
+    move = input(f"{turn}'s turn to move: ") # Start coord and end coord like E1E7
     str_coord = input_converter(move[:2])
     dest_coord = input_converter(move[2:])
     if str_coord == ValueError or dest_coord == ValueError:

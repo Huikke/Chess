@@ -2,30 +2,22 @@ import components.pieces as pieces
 
 class Chess():
     starting_pieces = [
-        pieces.Rook("B", (0, 0)),
-        pieces.Knight("B", (0, 1)),
-        pieces.Bishop("B", (0, 2)),
-        pieces.Queen("B", (0, 3)),
-        pieces.King("B", (0, 4)),
-        pieces.Bishop("B", (0, 5)),
-        pieces.Knight("B", (0, 6)),
-        pieces.Rook("B", (0, 7)),
-        pieces.Rook("W", (7, 0)),
-        pieces.Knight("W", (7, 1)),
-        pieces.Bishop("W", (7, 2)),
-        pieces.Queen("W", (7, 3)),
         pieces.King("W", (7, 4)),
-        pieces.Bishop("W", (7, 5)),
-        pieces.Knight("W", (7, 6)),
+        pieces.King("B", (0, 4)),
+        pieces.Queen("W", (7, 3)),
+        pieces.Queen("B", (0, 3)),
+        pieces.Rook("W", (7, 0)),
         pieces.Rook("W", (7, 7)),
-        pieces.Pawn("B", (1, 0)),
-        pieces.Pawn("B", (1, 1)),
-        pieces.Pawn("B", (1, 2)),
-        pieces.Pawn("B", (1, 3)),
-        pieces.Pawn("B", (1, 4)),
-        pieces.Pawn("B", (1, 5)),
-        pieces.Pawn("B", (1, 6)),
-        pieces.Pawn("B", (1, 7)),
+        pieces.Rook("B", (0, 0)),
+        pieces.Rook("B", (0, 7)),
+        pieces.Bishop("W", (7, 2)),
+        pieces.Bishop("W", (7, 5)),
+        pieces.Bishop("B", (0, 2)),
+        pieces.Bishop("B", (0, 5)),
+        pieces.Knight("B", (0, 1)),
+        pieces.Knight("B", (0, 6)),
+        pieces.Knight("W", (7, 1)),
+        pieces.Knight("W", (7, 6)),
         pieces.Pawn("W", (6, 0)),
         pieces.Pawn("W", (6, 1)),
         pieces.Pawn("W", (6, 2)),
@@ -33,22 +25,33 @@ class Chess():
         pieces.Pawn("W", (6, 4)),
         pieces.Pawn("W", (6, 5)),
         pieces.Pawn("W", (6, 6)),
-        pieces.Pawn("W", (6, 7))
+        pieces.Pawn("W", (6, 7)),
+        pieces.Pawn("B", (1, 0)),
+        pieces.Pawn("B", (1, 1)),
+        pieces.Pawn("B", (1, 2)),
+        pieces.Pawn("B", (1, 3)),
+        pieces.Pawn("B", (1, 4)),
+        pieces.Pawn("B", (1, 5)),
+        pieces.Pawn("B", (1, 6)),
+        pieces.Pawn("B", (1, 7))
     ]
 
     def __init__(self):
         self.board_pieces = list(self.starting_pieces)
-        self.turn = "W"
-        self.castling = ["K", "Q", "k", "q"]
+        self.kings = [self.board_pieces[0], self.board_pieces[1]]
+        self.turn = "W" #TODO
+        self.castling = ["K", "Q", "k", "q"] #TODO
         self.en_passant = "-"
-        self.halfmove_clock = 0
-        self.fullmove_counter = 1
+        self.halfmove_clock = 0 #TODO
+        self.fullmove_counter = 1 #TODO
 
     def state(self):
         return self.board_pieces
 
     def move(self, str_coord, dest_coord):
         en_passant_check = self.en_passant
+        if self.check_check() == True:
+            print("Check!")
 
         for piece in self.board_pieces:
             if piece.position == str_coord:
@@ -60,6 +63,11 @@ class Chess():
                     return False
                 if piece.destination_check(dest_coord, self) == False:
                     return False
+
+                piece.position = dest_coord
+                if self.check_check() == True:
+                    piece.position = str_coord
+                    return "Invalid move!"
 
                 if isinstance(piece, pieces.Pawn):
                     # En passant
@@ -86,10 +94,29 @@ class Chess():
                             break
                     # Disable double move
                     piece.first_move = False
+
                 # Set en passant back to "-" if it wasn't set up this turn
                 if self.en_passant == en_passant_check:
                     self.en_passant = "-"
-
-                piece.position = dest_coord
+                self.turn = "B" if self.turn == "W" else "W"
                 return True
+        return False
+
+    def check_check(self):
+        if self.turn == "W":
+            coords = self.kings[0].position
+        else:
+            coords = self.kings[1].position
+
+        for piece in self.board_pieces:
+            row_distance, col_distance = piece.coord_distance(coords)
+            # Each if clauses check the legality of the move
+            if piece.movement(row_distance, col_distance) == False:
+                continue
+            if piece.obstacle_check(row_distance, col_distance, self) == False and isinstance(piece, pieces.Knight) == False:
+                continue
+            if piece.destination_check(coords, self) == False:
+                continue
+
+            return True
         return False

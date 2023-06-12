@@ -41,7 +41,8 @@ class Piece:
                     if isinstance(self, Pawn) and self.capturing == False:
                         return False
                     # Removes eaten piece from the game
-                    game_state.board_pieces.remove(piece)
+                    if isinstance(self, King) == False:
+                        game_state.board_pieces.remove(piece)
                     return True
         # Pawn doesn't move to empty position, it is capturing
         if isinstance(self, Pawn) and self.capturing == True:
