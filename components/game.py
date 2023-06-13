@@ -1,43 +1,32 @@
 import components.pieces as pieces
 
 class Chess():
-    starting_pieces = [
-        pieces.King("W", (7, 4)),
-        pieces.King("B", (0, 4)),
-        pieces.Queen("W", (7, 3)),
-        pieces.Queen("B", (0, 3)),
-        pieces.Rook("W", (7, 0)),
-        pieces.Rook("W", (7, 7)),
-        pieces.Rook("B", (0, 0)),
-        pieces.Rook("B", (0, 7)),
-        pieces.Bishop("W", (7, 2)),
-        pieces.Bishop("W", (7, 5)),
-        pieces.Bishop("B", (0, 2)),
-        pieces.Bishop("B", (0, 5)),
-        pieces.Knight("B", (0, 1)),
-        pieces.Knight("B", (0, 6)),
-        pieces.Knight("W", (7, 1)),
-        pieces.Knight("W", (7, 6)),
-        pieces.Pawn("W", (6, 0)),
-        pieces.Pawn("W", (6, 1)),
-        pieces.Pawn("W", (6, 2)),
-        pieces.Pawn("W", (6, 3)),
-        pieces.Pawn("W", (6, 4)),
-        pieces.Pawn("W", (6, 5)),
-        pieces.Pawn("W", (6, 6)),
-        pieces.Pawn("W", (6, 7)),
-        pieces.Pawn("B", (1, 0)),
-        pieces.Pawn("B", (1, 1)),
-        pieces.Pawn("B", (1, 2)),
-        pieces.Pawn("B", (1, 3)),
-        pieces.Pawn("B", (1, 4)),
-        pieces.Pawn("B", (1, 5)),
-        pieces.Pawn("B", (1, 6)),
-        pieces.Pawn("B", (1, 7))
-    ]
+    @staticmethod
+    def starting_board():
+        board = []
+        board.append(pieces.King("W", (7, 4)))
+        board.append(pieces.King("B", (0, 4)))
+        board.append(pieces.Queen("W", (7, 3)))
+        board.append(pieces.Queen("B", (0, 3)))
+        board.append(pieces.Rook("W", (7, 0)))
+        board.append(pieces.Rook("W", (7, 7)))
+        board.append(pieces.Rook("B", (0, 0)))
+        board.append(pieces.Rook("B", (0, 7)))
+        board.append(pieces.Bishop("W", (7, 2)))
+        board.append(pieces.Bishop("W", (7, 5)))
+        board.append(pieces.Bishop("B", (0, 2)))
+        board.append(pieces.Bishop("B", (0, 5)))
+        board.append(pieces.Knight("W", (7, 1)))
+        board.append(pieces.Knight("W", (7, 6)))
+        board.append(pieces.Knight("B", (0, 1)))
+        board.append(pieces.Knight("B", (0, 6)))
+        for i in range(8):
+            board.append(pieces.Pawn("W", (6, i)))
+            board.append(pieces.Pawn("B", (1, i)))
+        return board
 
     def __init__(self):
-        self.board_pieces = list(self.starting_pieces)
+        self.board_pieces = self.starting_board()
         self.turn = "W" #TODO
         self.castling = ["K", "Q", "k", "q"] #TODO
         self.en_passant = "-"
