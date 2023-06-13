@@ -28,7 +28,7 @@ class Chess():
     def __init__(self):
         self.board_pieces = self.starting_board()
         self.turn = "W" #TODO
-        self.castling = ["K", "Q", "k", "q"] #TODO
+        self.castling = ["K", "Q", "k", "q"]
         self.en_passant = "-"
         self.halfmove_clock = 0 #TODO
         self.fullmove_counter = 1 #TODO
@@ -101,12 +101,17 @@ class Chess():
                     for i in range(str_coord[1], str_coord[1] + col_distance + direction, direction):
                         if self.check_check((str_coord[0], i)) == True:
                             return False
-                    # Move pieces to their spot
-                    piece.position = dest_coord
-                    for piece2 in self.board_pieces:
-                        if piece2.position == rook_position:
-                            piece2.position = (dest_coord[0], dest_coord[1] - direction)
-                            break
+
+                    # If testing, then don't move pieces, just return True
+                    if testing == False:
+                        # Move pieces to their spot
+                        piece.position = dest_coord
+                        for piece2 in self.board_pieces:
+                            if piece2.position == rook_position:
+                                piece2.position = (dest_coord[0], dest_coord[1] - direction)
+                                break
+                    else:
+                        return True
 
 
                 if testing == False:
