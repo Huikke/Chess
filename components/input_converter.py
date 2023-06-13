@@ -1,5 +1,9 @@
 # Converts an input to a form python understands
 def input_converter(move):
+    # String length is less than 2 causes an error
+    if len(move) < 2:
+        return ValueError
+
     # Converts latter part of coord
     col = ord(move[0].upper()) - 65
     if col < 65 and col > 72:
