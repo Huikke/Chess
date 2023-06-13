@@ -59,6 +59,7 @@ class Rook(Piece):
     def __init__(self, color, position):
         super().__init__(color, position)
         self.letter = "R"
+        self.first_move = True
 
     def movement(self, row_distance, col_distance):
         if row_distance == 0 or col_distance == 0:
@@ -103,10 +104,13 @@ class King(Piece):
     def __init__(self, color, position):
         super().__init__(color, position)
         self.letter = "K"
+        self.first_move = True
 
     def movement(self, row_distance, col_distance):
         if abs(row_distance) <= 1 and abs(col_distance) <= 1:
             return True
+        elif row_distance == 0 and abs(col_distance) == 2 and self.first_move == True:
+            return "castling"
         else:
             return False
 
