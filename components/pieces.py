@@ -40,10 +40,8 @@ class Piece:
                     # Pawn doesn't capture if capturing is not on
                     if isinstance(self, Pawn) and self.capturing == False:
                         return False
-                    # Removes eaten piece from the game
-                    game_state.captured_piece = piece
-                    game_state.board_pieces.remove(piece)
-                    return True
+                    # Returns the piece to be captured
+                    return piece
         # Pawn doesn't move to empty position, it is capturing
         if isinstance(self, Pawn) and self.capturing == True:
             # Unless it's legal en passant
@@ -51,10 +49,10 @@ class Piece:
                 move_direction = 1 if self.color == "W" else -1
                 for piece in game_state.board_pieces:
                     if piece.position == (destination[0] + move_direction, destination[1]):
-                        game_state.board_pieces.remove(piece)
-                return True
+                        # Returns the piece to be captured
+                        return piece
             return False
-        return True
+        return None
 
 
 class Rook(Piece):

@@ -19,4 +19,5 @@ while True:
     if game_move == True:
         board.display(game.board_pieces)
     else:
-        print("Invalid move!")
+        print(f"Invalid move! Explaination: {game_move}")
+        board.display(game.board_pieces)

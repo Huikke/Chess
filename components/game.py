@@ -38,7 +38,6 @@ class Chess():
 
     def __init__(self):
         self.board_pieces = list(self.starting_pieces)
-        self.captured_piece = None
         # self.infinite = False
         self.turn = "W" #TODO
         self.castling = ["K", "Q", "k", "q"] #TODO
@@ -70,14 +69,23 @@ class Chess():
                     return False
                 if piece.obstacle_check(row_distance, col_distance, self) == False and isinstance(piece, pieces.Knight) == False:
                     return False
-                if piece.destination_check(dest_coord, self) == False:
+                destination_check = piece.destination_check(dest_coord, self)
+                # Returns False when move isn't legal
+                if destination_check == False:
                     return False
-
+                # Returns None when move is legal, but no pieces are captured
+                elif destination_check == None:
+                    pass
+                # Else returns captured piece stored in destination_check
+                else:
+                    self.board_pieces.remove(destination_check)
                 piece.position = dest_coord
+                # If check is True, undo the all changes made so far and return
                 if self.check_check() == True:
                     piece.position = str_coord
-                    self.board_pieces.append(self.captured_piece)
-                    return False
+                    if destination_check != None:
+                        self.board_pieces.append(destination_check)
+                    return "Check"
 
                 if isinstance(piece, pieces.Pawn):
                     # En passant
