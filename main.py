@@ -18,6 +18,12 @@ while True:
 
     if game_move == True:
         board.display(game.board_pieces)
+    elif game_move == "checkmate":
+        if game.turn == "B":
+            print("White wins!")
+        else:
+            print("Black wins!")
+        break
     else:
         print(f"Invalid move! Explaination: {game_move}")
         board.display(game.board_pieces)

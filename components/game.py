@@ -49,13 +49,6 @@ class Chess():
 
     def move(self, str_coord, dest_coord, testing=False):
         en_passant_check = self.en_passant
-        if testing == False:
-            if self.check_check() == True:
-                print("it is a check! let's check if it was checkmate!")
-                if self.checkmate_check() == True:
-                    print("Checkmate!")
-                else:
-                    print("it is not a checkmate")
 
         for piece in self.board_pieces:
             if piece.position == str_coord:
@@ -114,6 +107,14 @@ class Chess():
                     if self.en_passant == en_passant_check:
                         self.en_passant = "-"
                     self.turn = "B" if self.turn == "W" else "W"
+
+                    # Checks whether the game has ended
+                    if self.check_check() == True:
+                        if self.checkmate_check() == True:
+                            print("Checkmate!")
+                            return "checkmate"
+                        else:
+                            print("Check!")
                 else: # Revert the changes
                     piece.position = str_coord
                     if destination_check != None:
