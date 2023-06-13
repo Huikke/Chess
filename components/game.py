@@ -27,7 +27,7 @@ class Chess():
 
     def __init__(self):
         self.board_pieces = self.starting_board()
-        self.turn = "W" #TODO
+        self.turn = "W"
         self.castling = ["K", "Q", "k", "q"]
         self.en_passant = "-"
         self.halfmove_clock = 0 #TODO
@@ -41,18 +41,20 @@ class Chess():
 
         for piece in self.board_pieces:
             if piece.position == str_coord:
+                if piece.color != self.turn:
+                    return "That's opponent's piece!"
                 row_distance, col_distance = piece.coord_distance(dest_coord)
                 # Each if clauses check the legality of the move
                 movement = piece.movement(row_distance, col_distance)
                 if movement == False:
-                    return False
+                    return "Movement impossible"
                 elif movement == True:
                     if piece.obstacle_check(row_distance, col_distance, self) == False and isinstance(piece, pieces.Knight) == False:
-                        return False
+                        return "There's obstacle in piece's way"
                     destination_check = piece.destination_check(dest_coord, self)
                     # Returns False when move isn't legal
                     if destination_check == False:
-                        return False
+                        return "Destination not valid"
                     # Returns None when move is legal, but no pieces are captured
                     elif destination_check == None:
                         pass
@@ -72,26 +74,26 @@ class Chess():
                     # Checks if associated pieces have moved
                     if str_coord == (7, 4) and dest_coord == (7, 2):
                         if "Q" not in self.castling:
-                            return False
+                            return "Invalid castling"
                         col_distance -= 2
                         rook_position = (7, 0)
                     elif str_coord == (7, 4) and dest_coord == (7, 6):
                         if "K" not in self.castling:
-                            return False
+                            return "Invalid castling"
                         col_distance += 1
                         rook_position = (7, 7)
                     elif str_coord == (0, 4) and dest_coord == (0, 2):
                         if "q" not in self.castling:
-                            return False
+                            return "Invalid castling"
                         col_distance -= 2
                         rook_position = (0, 0)
                     elif str_coord == (0, 4) and dest_coord == (0, 6):
                         if "k" not in self.castling:
-                            return False
+                            return "Invalid castling"
                         col_distance += 1
                         rook_position = (0, 7)
                     if piece.obstacle_check(row_distance, col_distance, self) == False:
-                        return False
+                        return "Invalid castling"
                     # Sets direction for later use
                     if col_distance > 0:
                         direction = 1
@@ -100,7 +102,7 @@ class Chess():
                     # Checks for check of king's path
                     for i in range(str_coord[1], str_coord[1] + col_distance + direction, direction):
                         if self.check_check((str_coord[0], i)) == True:
-                            return False
+                            return "Invalid castling"
 
                     # If testing, then don't move pieces, just return True
                     if testing == False:
@@ -182,7 +184,7 @@ class Chess():
                         self.board_pieces.append(destination_check)
 
                 return True
-        return False
+        return "Empty square"
 
     def check_check(self, coords=None): # Parameter for castling purposes
         if coords == None:
