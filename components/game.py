@@ -4,30 +4,30 @@ class Chess():
     @staticmethod
     def starting_board():
         board = []
-        board.append(pieces.King("W", (7, 4)))
-        board.append(pieces.King("B", (0, 4)))
-        board.append(pieces.Queen("W", (7, 3)))
-        board.append(pieces.Queen("B", (0, 3)))
-        board.append(pieces.Rook("W", (7, 0)))
-        board.append(pieces.Rook("W", (7, 7)))
-        board.append(pieces.Rook("B", (0, 0)))
-        board.append(pieces.Rook("B", (0, 7)))
-        board.append(pieces.Bishop("W", (7, 2)))
-        board.append(pieces.Bishop("W", (7, 5)))
-        board.append(pieces.Bishop("B", (0, 2)))
-        board.append(pieces.Bishop("B", (0, 5)))
-        board.append(pieces.Knight("W", (7, 1)))
-        board.append(pieces.Knight("W", (7, 6)))
-        board.append(pieces.Knight("B", (0, 1)))
-        board.append(pieces.Knight("B", (0, 6)))
+        board.append(pieces.King("w", (7, 4)))
+        board.append(pieces.King("b", (0, 4)))
+        board.append(pieces.Queen("w", (7, 3)))
+        board.append(pieces.Queen("b", (0, 3)))
+        board.append(pieces.Rook("w", (7, 0)))
+        board.append(pieces.Rook("w", (7, 7)))
+        board.append(pieces.Rook("b", (0, 0)))
+        board.append(pieces.Rook("b", (0, 7)))
+        board.append(pieces.Bishop("w", (7, 2)))
+        board.append(pieces.Bishop("w", (7, 5)))
+        board.append(pieces.Bishop("b", (0, 2)))
+        board.append(pieces.Bishop("b", (0, 5)))
+        board.append(pieces.Knight("w", (7, 1)))
+        board.append(pieces.Knight("w", (7, 6)))
+        board.append(pieces.Knight("b", (0, 1)))
+        board.append(pieces.Knight("b", (0, 6)))
         for i in range(8):
-            board.append(pieces.Pawn("W", (6, i)))
-            board.append(pieces.Pawn("B", (1, i)))
+            board.append(pieces.Pawn("w", (6, i)))
+            board.append(pieces.Pawn("b", (1, i)))
         return board
 
     def __init__(self):
         self.board_pieces = self.starting_board()
-        self.turn = "W"
+        self.turn = "w"
         self.castling = ["K", "Q", "k", "q"]
         self.en_passant = "-"
         self.halfmove_clock = 0 #TODO
@@ -121,7 +121,7 @@ class Chess():
                     if isinstance(piece, pieces.Pawn):
                         # En passant
                         if abs(row_distance) == 2:
-                            move_direction = 1 if piece.color == "W" else -1
+                            move_direction = 1 if piece.color == "w" else -1
                             self.en_passant = (dest_coord[0] + move_direction, dest_coord[1])
                         # Promotion
                         if dest_coord[0] == 0 or dest_coord[0] == 7:
@@ -170,9 +170,9 @@ class Chess():
                     if self.en_passant == en_passant_check:
                         self.en_passant = "-"
                     # Move fullmove counter up by one if it was black's move
-                    if self.turn == "B":
+                    if self.turn == "b":
                         self.fullmove_number += 1
-                    self.turn = "B" if self.turn == "W" else "W"
+                    self.turn = "b" if self.turn == "w" else "w"
 
                     # Checks whether the game has ended
                     if self.check_check() == True:

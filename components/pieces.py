@@ -5,9 +5,9 @@ class Piece:
         self.letter = "?" # Gets replaced in subclass
 
     def __str__(self):
-        if self.color == "W":
+        if self.color == "w":
             return self.letter
-        if self.color == "B":
+        if self.color == "b":
             return self.letter.lower()
 
     def coord_distance(self, destination):
@@ -36,7 +36,7 @@ class Piece:
                 if self.color == piece.color:
                     return False
                 # Do capture enemy piece
-                elif self.color == "W" and piece.color == "B" or self.color == "B" and piece.color == "W":
+                elif self.color == "w" and piece.color == "b" or self.color == "b" and piece.color == "w":
                     # Pawn doesn't capture if capturing is not on
                     if isinstance(self, Pawn) and self.capturing == False:
                         return False
@@ -46,7 +46,7 @@ class Piece:
         if isinstance(self, Pawn) and self.capturing == True:
             # Unless it's legal en passant
             if destination == game_state.en_passant:
-                move_direction = 1 if self.color == "W" else -1
+                move_direction = 1 if self.color == "w" else -1
                 for piece in game_state.board_pieces:
                     if piece.position == (destination[0] + move_direction, destination[1]):
                         # Returns the piece to be captured
@@ -127,10 +127,10 @@ class Pawn(Piece):
         if self.first_move:
             move_distance = 2
 
-        if self.color == "W":
+        if self.color == "w":
             if row_distance > 0:
                 return False
-        elif self.color == "B":
+        elif self.color == "b":
             if row_distance < 0:
                 return False
 

@@ -6,7 +6,7 @@ game = Chess()
 board.display(game.board_pieces)
 
 while True:
-    turn = "White" if game.turn == "W" else "Black"
+    turn = "White" if game.turn == "w" else "Black"
     move = input(f"{turn}'s turn to move: ") # Start coord and end coord like E1E7
     str_coord = input_converter(move[:2])
     dest_coord = input_converter(move[2:])
@@ -19,7 +19,7 @@ while True:
     if game_move == True:
         board.display(game.board_pieces)
     elif game_move == "checkmate":
-        if game.turn == "B":
+        if game.turn == "b":
             print("White wins!")
         else:
             print("Black wins!")
