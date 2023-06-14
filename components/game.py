@@ -30,15 +30,13 @@ class Chess():
         self.turn = "w"
         self.castling = ["K", "Q", "k", "q"]
         self.en_passant = "-"
-        self.halfmove_clock = 0 #TODO
+        self.halfmove_clock = 0
         self.fullmove_number = 1
 
     def state(self):
         return self.board_pieces
 
     def move(self, str_coord, dest_coord, testing=False):
-        en_passant_check = self.en_passant
-
         for piece in self.board_pieces:
             if piece.position == str_coord:
                 if piece.color != self.turn:
@@ -117,6 +115,7 @@ class Chess():
 
 
                 if testing == False:
+                    en_passant_check = self.en_passant
                     # Piece specific rules for Pawn, Rook and King
                     if isinstance(piece, pieces.Pawn):
                         # En passant
@@ -172,6 +171,12 @@ class Chess():
                     # Move fullmove counter up by one if it was black's move
                     if self.turn == "b":
                         self.fullmove_number += 1
+                    # Move halfmove clock up by 1 or reset it to 0
+                    if destination_check != None or isinstance(piece, pieces.Pawn):
+                        self.halfmove_clock = 0
+                    else:
+                        self.halfmove_clock += 1
+                    # Switch turns
                     self.turn = "b" if self.turn == "w" else "w"
 
                     # Checks whether the game has ended
@@ -187,6 +192,9 @@ class Chess():
                     elif self.dead_position() == True:
                         print("Insufficient material")
                         return "draw"
+                    elif self.halfmove_clock == 100:
+                        print("Halfmove clock is full")
+                        return "draw!"
                 else: # Revert the changes
                     piece.position = str_coord
                     if destination_check != None:
