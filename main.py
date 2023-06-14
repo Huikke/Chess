@@ -14,7 +14,12 @@ while True:
         print("Invalid input!")
         continue
 
-    game_move = game.move(str_coord, dest_coord)
+    # Fifth character tells which piece Pawn promotes to
+    promotion = False
+    if len(move) >= 5:
+        promotion = move[4]
+
+    game_move = game.move(str_coord, dest_coord, promotion)
 
     if game_move == True:
         board.display(game.board_pieces)

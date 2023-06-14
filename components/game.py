@@ -36,7 +36,7 @@ class Chess():
     def state(self):
         return self.board_pieces
 
-    def move(self, str_coord, dest_coord, testing=False):
+    def move(self, str_coord, dest_coord, promotion=False, testing=False):
         for piece in self.board_pieces:
             if piece.position == str_coord:
                 if piece.color != self.turn:
@@ -124,22 +124,22 @@ class Chess():
                             self.en_passant = (dest_coord[0] + move_direction, dest_coord[1])
                         # Promotion
                         if dest_coord[0] == 0 or dest_coord[0] == 7:
-                            while True:
-                                promote_to = input("Choose what the pawn promote to: ") # One letter
-                                if promote_to == "Q" or promote_to == "q":
-                                    self.board_pieces.append(pieces.Queen(piece.color, dest_coord))
-                                elif promote_to == "R" or promote_to == "r":
-                                    self.board_pieces.append(pieces.Rook(piece.color, dest_coord))
-                                elif promote_to == "N" or promote_to == "n":
-                                    self.board_pieces.append(pieces.Knight(piece.color, dest_coord))
-                                elif promote_to == "B" or promote_to == "b":
-                                    self.board_pieces.append(pieces.Bishop(piece.color, dest_coord))
-                                else:
-                                    print("Invalid input!")
-                                    continue
-                                # Remove the pawn
-                                self.board_pieces.remove(piece)
-                                break
+                            if promotion == "Q" or promotion == "q":
+                                self.board_pieces.append(pieces.Queen(piece.color, dest_coord))
+                            elif promotion == "R" or promotion == "r":
+                                self.board_pieces.append(pieces.Rook(piece.color, dest_coord))
+                            elif promotion == "N" or promotion == "n":
+                                self.board_pieces.append(pieces.Knight(piece.color, dest_coord))
+                            elif promotion == "B" or promotion == "b":
+                                self.board_pieces.append(pieces.Bishop(piece.color, dest_coord))
+                            # If promotion is invalid, revert moves and return
+                            else:
+                                piece.position = str_coord
+                                if destination_check != None:
+                                    self.board_pieces.append(destination_check)
+                                return "Invalid promotion"
+                            # Remove promoted pawn
+                            self.board_pieces.remove(piece)
                         # Disable double move
                         piece.first_move = False
                     elif isinstance(piece, pieces.Rook) and piece.first_move == True:
@@ -234,7 +234,7 @@ class Chess():
             if piece.color == self.turn:
                 for x in range(8):
                     for y in range(8):
-                        if self.move(piece.position, (x, y), True) == True:
+                        if self.move(piece.position, (x, y), False, True) == True:
                             return True
         return False
 
