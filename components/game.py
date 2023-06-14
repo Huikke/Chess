@@ -181,6 +181,9 @@ class Chess():
                     elif self.available_moves_check() == False:
                         print("Stalemate!")
                         return "draw"
+                    elif self.dead_position() == True:
+                        print("Insufficient material")
+                        return "draw"
                 else: # Revert the changes
                     piece.position = str_coord
                     if destination_check != None:
@@ -223,3 +226,34 @@ class Chess():
                         if self.move(piece.position, (x, y), True) == True:
                             return True
         return False
+
+    # Tells which color the board square is
+    @staticmethod
+    def square_color(coords):
+        # Even is light, odd is dark 
+        algorithm = (coords[0] * 7 + coords[1]) % 2
+        if algorithm == 0:
+            color = "light"
+        else:
+            color = "dark"
+        return color
+
+    # Check whether there is enough material for checkmate
+    def dead_position(self):
+        knight = 0
+        bishop = 0
+        bishop_square_color = None
+
+        for piece in self.board_pieces:
+            if isinstance(piece, pieces.Queen) or isinstance(piece, pieces.Rook) or isinstance(piece, pieces.Pawn):
+                return False
+            elif isinstance(piece, pieces.Knight):
+                knight += 1
+                if knight >= 2 or bishop >= 1:
+                    return False
+            elif isinstance(piece, pieces.Bishop):
+                bishop += 1
+                if bishop >= 2 and bishop_square_color != self.square_color(piece.position) or knight >= 1:
+                    return False
+                bishop_square_color = self.square_color(piece.position)
+        return True
