@@ -31,7 +31,7 @@ class Chess():
         self.castling = ["K", "Q", "k", "q"]
         self.en_passant = "-"
         self.halfmove_clock = 0 #TODO
-        self.fullmove_counter = 1 #TODO
+        self.fullmove_number = 1
 
     def state(self):
         return self.board_pieces
@@ -169,6 +169,9 @@ class Chess():
                     # Set en passant back to "-" if it wasn't set up this turn
                     if self.en_passant == en_passant_check:
                         self.en_passant = "-"
+                    # Move fullmove counter up by one if it was black's move
+                    if self.turn == "B":
+                        self.fullmove_number += 1
                     self.turn = "B" if self.turn == "W" else "W"
 
                     # Checks whether the game has ended
