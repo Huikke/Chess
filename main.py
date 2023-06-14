@@ -24,6 +24,9 @@ while True:
         else:
             print("Black wins!")
         break
+    elif game_move == "draw":
+        print("Draw!")
+        break
     else:
         print(f"Invalid move! Explaination: {game_move}")
         board.display(game.board_pieces)
