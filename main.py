@@ -23,6 +23,7 @@ while True:
 
     if game_move == True:
         board.display(game.board_pieces)
+        board.fen(game)
     elif game_move == "checkmate":
         if game.turn == "b":
             print("White wins!")
