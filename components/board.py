@@ -1,4 +1,6 @@
 from components.input_converter import coordinate_converter
+from components.game import Chess
+import components.pieces as pieces
 
 def display(board_pieces):
     # Generate an empty board
@@ -71,7 +73,7 @@ def dev_display(board_pieces):
     print("  0  1  2  3  4  5  6  7")
 
 
-def fen(game):
+def game_to_fen(game):
     # Generate an empty board
     board = []
     for i in range(8):
@@ -115,4 +117,55 @@ def fen(game):
     fen_str += " " + str(game.halfmove_clock)
     fen_str += " " + str(game.fullmove_number)
 
-    print(fen_str)
+    return fen_str
+
+def fen_to_game(fen):
+    fen_list = fen.split()
+    fen_board = fen_list[0].split("/")
+    board = []
+
+    count = 0
+    for row in fen_board:
+        for char in row:
+            if char.isdigit():
+                count += int(char)
+            else:
+                coords = (int(count / 8), count % 8)
+                board.append(create_piece(char, coords))
+                count += 1
+
+    turn = fen_list[1]
+    castling = fen_list[2].split()
+    en_passant = fen_list[3]
+    halfmove_clock = fen_list[4]
+    fullmove_number = fen_list[5]
+
+    return Chess(board_pieces=board, turn=turn, castling=castling, en_passant=en_passant, halfmove_clock=halfmove_clock, fullmove_number=fullmove_number)
+
+def create_piece(letter, coords):
+    if letter == "P":
+        return pieces.Pawn("w", coords)
+    elif letter == "p":
+        return pieces.Pawn("b", coords)
+    elif letter == "R":
+        return pieces.Rook("w", coords)
+    elif letter == "r":
+        return pieces.Rook("b", coords)
+    elif letter == "N":
+        return pieces.Knight("w", coords)
+    elif letter == "n":
+        return pieces.Knight("b", coords)
+    elif letter == "B":
+        return pieces.Bishop("w", coords)
+    elif letter == "b":
+        return pieces.Bishop("b", coords)
+    elif letter == "K":
+        return pieces.King("w", coords)
+    elif letter == "k":
+        return pieces.King("b", coords)
+    elif letter == "Q":
+        return pieces.Queen("w", coords)
+    elif letter == "q":
+        return pieces.Queen("b", coords)
+    else:
+        print(ValueError)

@@ -23,16 +23,17 @@ while True:
 
     if game_move == True:
         board.display(game.board_pieces)
-        board.fen(game)
+        print(board.game_to_fen(game))
     elif game_move == "checkmate":
+        board.display(game.board_pieces)
         if game.turn == "b":
             print("White wins!")
         else:
             print("Black wins!")
         break
     elif game_move == "draw":
+        board.display(game.board_pieces)
         print("Draw!")
         break
     else:
         print(f"Invalid move! Explaination: {game_move}")
-        board.display(game.board_pieces)

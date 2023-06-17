@@ -25,13 +25,13 @@ class Chess():
             board.append(pieces.Pawn("b", (1, i)))
         return board
 
-    def __init__(self):
-        self.board_pieces = self.starting_board()
-        self.turn = "w"
-        self.castling = ["K", "Q", "k", "q"]
-        self.en_passant = "-"
-        self.halfmove_clock = 0
-        self.fullmove_number = 1
+    def __init__(self, board_pieces=None, turn="w", castling=["K", "Q", "k", "q"], en_passant="-", halfmove_clock=0, fullmove_number=1):
+        self.board_pieces = board_pieces or self.starting_board()
+        self.turn = turn
+        self.castling = castling
+        self.en_passant = en_passant
+        self.halfmove_clock = halfmove_clock
+        self.fullmove_number = fullmove_number
 
     def state(self):
         return self.board_pieces
