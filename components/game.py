@@ -281,3 +281,15 @@ class Chess():
                     if self.move(piece.position, (x, y), False, True) == True:
                         valid_moves.append((x, y))
         return valid_moves
+    
+    def get_valid_pieces(self):
+        valid_pieces = []
+        for piece in self.board_pieces:
+            if piece.color != self.turn:
+                continue
+            for x in range(8):
+                for y in range(8):
+                    if self.move(piece.position, (x, y), False, True) == True:
+                        valid_pieces.append(piece)
+                        break
+        return valid_pieces

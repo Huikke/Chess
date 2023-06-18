@@ -24,13 +24,35 @@ class tests(unittest.TestCase):
 
     def test_validity_check(self):
         game = board.fen_to_game("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        print("Valid moves")
         for piece in game.board_pieces:
             print(piece, piece.position, game.get_valid_moves(piece.position))
         print("")
-        game = board.fen_to_game("r2k3r/1pp1ppbp/3q2pn/pB1P1b2/Pn4P1/2N2N2/1BPPQP1P/R3K2R w KQ - 0 13")
-        print(game.castling)
+        print("Valid pieces")
+        for piece in game.get_valid_pieces():
+            print(piece, piece.position)
+        print("")
+
+        # Castling validity test
+        game = board.fen_to_game("4k3/8/8/8/8/8/8/R3K2R w KQ - 1 1")
+        for piece in game.board_pieces:
+            if isinstance(piece, pieces.King) and piece.color == "w":
+                self.assertEqual(game.get_valid_moves(piece.position), [(6, 3), (6, 4), (6, 5), (7, 2), (7, 3), (7, 5), (7, 6)])
+        game = board.fen_to_game("4k3/8/8/8/8/8/8/R3K2R b KQ - 1 1")
+        for piece in game.board_pieces:
+            if isinstance(piece, pieces.King) and piece.color == "b":
+                self.assertEqual(game.get_valid_moves(piece.position), [(0, 3), (0, 5), (1, 3), (1, 4), (1, 5)])
+
+        # Check validity test
+        game = board.fen_to_game("rnbqkb1r/pppp1Qpp/5n2/4p3/4P3/8/PPPP1PPP/RNB1KBNR b KQkq - 0 3")
+        print("Valid moves")
         for piece in game.board_pieces:
             print(piece, piece.position, game.get_valid_moves(piece.position))
+        print("")
+        print("Valid pieces")
+        for piece in game.get_valid_pieces():
+            print(piece, piece.position)
+        print("")
 
 
 if __name__ == '__main__':
