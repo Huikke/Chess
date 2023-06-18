@@ -181,12 +181,12 @@ class Chess():
 
                     # Checks whether the game has ended
                     if self.check_check() == True:
-                        if self.available_moves_check() == False:
+                        if self.checkmate_check() == False:
                             print("Checkmate!")
                             return "checkmate"
                         else:
                             print("Check!")
-                    elif self.available_moves_check() == False:
+                    elif self.checkmate_check() == False:
                         print("Stalemate!")
                         return "draw"
                     elif self.dead_position() == True:
@@ -228,7 +228,7 @@ class Chess():
             return True
         return False
 
-    def available_moves_check(self):
+    def checkmate_check(self):
         # If no piece can move to a spot that can resolve the check, it's checkmate!
         for piece in self.board_pieces:
             if piece.color == self.turn:

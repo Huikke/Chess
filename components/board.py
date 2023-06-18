@@ -137,8 +137,8 @@ def fen_to_game(fen):
     turn = fen_list[1]
     castling = fen_list[2].split()
     en_passant = fen_list[3]
-    halfmove_clock = fen_list[4]
-    fullmove_number = fen_list[5]
+    halfmove_clock = int(fen_list[4])
+    fullmove_number = int(fen_list[5])
 
     return Chess(board_pieces=board, turn=turn, castling=castling, en_passant=en_passant, halfmove_clock=halfmove_clock, fullmove_number=fullmove_number)
 
