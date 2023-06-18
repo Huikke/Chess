@@ -90,6 +90,8 @@ class Chess():
                             return "Invalid castling"
                         col_distance += 1
                         rook_position = (0, 7)
+                    else:
+                        return "Very invalid castling"
                     if piece.obstacle_check(row_distance, col_distance, self) == False:
                         return "Invalid castling"
                     # Sets direction for later use
@@ -101,8 +103,7 @@ class Chess():
                     for i in range(str_coord[1], str_coord[1] + col_distance + direction, direction):
                         if self.check_check((str_coord[0], i)) == True:
                             return "Invalid castling"
-
-                    # If testing, then don't move pieces, just return True
+                    # If testing castling, then don't move pieces, just return True
                     if testing == False:
                         # Move pieces to their spot
                         piece.position = dest_coord
@@ -110,6 +111,7 @@ class Chess():
                             if piece2.position == rook_position:
                                 piece2.position = (dest_coord[0], dest_coord[1] - direction)
                                 break
+                        destination_check = None # This prevents error later
                     else:
                         return True
 
@@ -142,7 +144,7 @@ class Chess():
                             self.board_pieces.remove(piece)
                         # Disable double move
                         piece.first_move = False
-                    elif isinstance(piece, pieces.Rook) and piece.first_move == True:
+                    elif isinstance(piece, pieces.Rook):
                         if str_coord == (7, 0) and "Q" in self.castling:
                             self.castling.remove("Q")
                         elif str_coord == (7, 7) and "K" in self.castling:
@@ -151,8 +153,7 @@ class Chess():
                             self.castling.remove("q")
                         elif str_coord == (0, 7) and "k" in self.castling:
                             self.castling.remove("k")
-                        piece.first_move = False
-                    elif isinstance(piece, pieces.King) and piece.first_move == True:
+                    elif isinstance(piece, pieces.King):
                         if str_coord == (7, 4):
                             if "Q" in self.castling:
                                 self.castling.remove("Q")
@@ -163,7 +164,6 @@ class Chess():
                                 self.castling.remove("q")
                             if "k" in self.castling:
                                 self.castling.remove("k")
-                        piece.first_move = False
 
                     # Set en passant back to "-" if it wasn't set up this turn
                     if self.en_passant == en_passant_check:
@@ -268,3 +268,16 @@ class Chess():
                     return False
                 bishop_square_color = self.square_color(piece.position)
         return True
+
+    def get_valid_moves(self, square):
+        valid_moves = []
+        for piece in self.board_pieces:
+            if piece.position != square:
+                continue
+            if piece.color != self.turn:
+                continue
+            for x in range(8):
+                for y in range(8):
+                    if self.move(piece.position, (x, y), False, True) == True:
+                        valid_moves.append((x, y))
+        return valid_moves

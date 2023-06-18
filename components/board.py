@@ -135,7 +135,7 @@ def fen_to_game(fen):
                 count += 1
 
     turn = fen_list[1]
-    castling = fen_list[2].split()
+    castling = [char for char in fen_list[2]]
     en_passant = fen_list[3]
     halfmove_clock = int(fen_list[4])
     fullmove_number = int(fen_list[5])
