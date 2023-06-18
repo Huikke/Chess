@@ -2,7 +2,18 @@ import components.board as board
 from components.game import Chess
 from components.input_converter import input_converter
 
-game = Chess()
+while True:
+    start = input("New game ("") or load FEN?: ")
+    if start == "":
+        game = Chess()
+        break
+    else:
+        try:
+            game = board.fen_to_game(start)
+            break
+        except:
+            print("Invalid FEN")
+
 board.display(game.board_pieces)
 
 while True:
