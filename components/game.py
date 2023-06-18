@@ -25,6 +25,7 @@ class Chess():
             board.append(pieces.Pawn("b", (1, i)))
         return board
 
+    # Initiates a board. Every parameter correspond FEN field
     def __init__(self, board_pieces=None, turn="w", castling=["K", "Q", "k", "q"], en_passant="-", halfmove_clock=0, fullmove_number=1):
         self.board_pieces = board_pieces or self.starting_board()
         self.turn = turn
@@ -33,9 +34,13 @@ class Chess():
         self.halfmove_clock = halfmove_clock
         self.fullmove_number = fullmove_number
 
-    def state(self):
+    # Unused
+    def board_state(self):
         return self.board_pieces
 
+    # Core that advances the game forward
+    # Return True if move is successful, strings functions as False with error message attached to it
+    # When testing is on, test moves without affecting the game state
     def move(self, str_coord, dest_coord, promotion=False, testing=False):
         for piece in self.board_pieces:
             if piece.position == str_coord:
@@ -116,6 +121,7 @@ class Chess():
                         return True
 
 
+                # If not testing moves, update the board state, else revert the board state
                 if testing == False:
                     en_passant_check = self.en_passant
                     # Piece specific rules for Pawn, Rook and King
@@ -195,7 +201,7 @@ class Chess():
                     elif self.halfmove_clock == 100:
                         print("Halfmove clock is full")
                         return "draw!"
-                else: # Revert the changes
+                else:
                     piece.position = str_coord
                     if destination_check != None:
                         self.board_pieces.append(destination_check)
@@ -203,6 +209,7 @@ class Chess():
                 return True
         return "Empty square"
 
+    # Check if a piece is checking ally king
     def check_check(self, coords=None): # Parameter for castling purposes
         if coords == None:
             # Find ally King coords
@@ -228,6 +235,7 @@ class Chess():
             return True
         return False
 
+    # Check if checkmate has been achieved
     def checkmate_check(self):
         # If no piece can move to a spot that can resolve the check, it's checkmate!
         for piece in self.board_pieces:
@@ -269,7 +277,8 @@ class Chess():
                 bishop_square_color = self.square_color(piece.position)
         return True
 
-    def get_valid_moves(self, square):
+    # Get the valid moves for a piece in a given square
+    def get_valid_moves(self, square) -> list:
         valid_moves = []
         for piece in self.board_pieces:
             if piece.position != square:
@@ -281,8 +290,9 @@ class Chess():
                     if self.move(piece.position, (x, y), False, True) == True:
                         valid_moves.append((x, y))
         return valid_moves
-    
-    def get_valid_pieces(self):
+
+    # Get pieces that have valid moves
+    def get_valid_pieces(self) -> list:
         valid_pieces = []
         for piece in self.board_pieces:
             if piece.color != self.turn:
@@ -293,3 +303,11 @@ class Chess():
                         valid_pieces.append(piece)
                         break
         return valid_pieces
+
+    # Get all coordinates of pieces that can move as key and list of moves it can make as value
+    def get_all_moves(self) -> dict:
+        all_moves = {}
+        valid_pieces = self.get_valid_pieces()
+        for piece in valid_pieces:
+            all_moves[piece.position] = self.get_valid_moves(piece.position)
+        return all_moves

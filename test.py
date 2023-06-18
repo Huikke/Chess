@@ -32,6 +32,9 @@ class tests(unittest.TestCase):
         for piece in game.get_valid_pieces():
             print(piece, piece.position)
         print("")
+        print("All valid moves")
+        print(game.get_all_moves())
+        print("")
 
         # Castling validity test
         game = board.fen_to_game("4k3/8/8/8/8/8/8/R3K2R w KQ - 1 1")
