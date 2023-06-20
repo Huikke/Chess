@@ -4,12 +4,15 @@ class Piece:
         self.position = position
         self.letter = "?" # Gets replaced in subclass
 
+    # When printing, only show letter
+    # White is uppercase, black is lowercase
     def __str__(self):
         if self.color == "w":
             return self.letter
         if self.color == "b":
             return self.letter.lower()
 
+    # How far is current square to destination square
     def coord_distance(self, destination):
         row_distance = destination[0] - self.position[0]
         col_distance = destination[1] - self.position[1]
