@@ -30,21 +30,25 @@ while True:
     if len(move) >= 5:
         promotion = move[4]
 
-    game_move = game.move(str_coord, dest_coord, promotion)
+    move_result, move_message = game.move(str_coord, dest_coord, promotion)
 
-    if game_move == True:
+    if move_result == True:
         board.display(game.board_pieces)
         print(board.game_to_fen(game))
-    elif game_move == "checkmate":
-        board.display(game.board_pieces)
-        if game.turn == "b":
-            print("White wins!")
-        else:
-            print("Black wins!")
-        break
-    elif game_move == "draw":
-        board.display(game.board_pieces)
-        print("Draw!")
-        break
+        if move_message == "Checkmate":
+            if game.turn == "b":
+                print("Checkmate!\nWhite wins!")
+            else:
+                print("Checkmate!\nBlack wins!")
+            break
+        elif move_message == "Stalemate":
+            print("Draw!\nStalemate")
+            break
+        elif move_message == "Insufficient material":
+            print("Draw!\nInsufficient material")
+            break
+        elif move_message == "Halfmove clock is full":
+            print("Draw!\nHalfmove clock is full")
+            break
     else:
-        print(f"Invalid move! Explaination: {game_move}")
+        print(f"Invalid move!\nExplaination: {move_message}")
